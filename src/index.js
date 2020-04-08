@@ -14,19 +14,19 @@ const genDiff = (pathToFile1, pathToFile2) => {
   result.push('{');
   for (const key of uniqKeys) {
     if (_.has(parsedFile1, key) && _.has(parsedFile2, key)) {
-      //if (parsedFile1[key] === parsedFile2[key]) {
-        //result.push(`    ${key}: ${parsedFile1[key]}`);
-      //} else {
-        //result.push(`  + ${key}: ${parsedFile2[key]}\n  - ${key}: ${parsedFile1[key]}`);
-      //}
+      if (parsedFile1[key] === parsedFile2[key]) {
+        result.push(`    ${key}: ${parsedFile1[key]}`);
+      } else {
+        result.push(`  + ${key}: ${parsedFile2[key]}\n  - ${key}: ${parsedFile1[key]}`);
+      }
     }
-    //else {
-      //if (!_.has(parsedFile1, key)) {
-        //result.push(`  + ${key}: ${parsedFile2[key]}`);
-      //} else {
-        //result.push(`  - ${key}: ${parsedFile1[key]}`);
-      //}
-    //}
+    else {
+      if (!_.has(parsedFile1, key)) {
+        result.push(`  + ${key}: ${parsedFile2[key]}`);
+      } else {
+        result.push(`  - ${key}: ${parsedFile1[key]}`);
+      }
+    }
   }
   result.push('}');
   console.log(result.join('\n'));
