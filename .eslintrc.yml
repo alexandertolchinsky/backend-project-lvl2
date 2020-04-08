@@ -1,0 +1,9 @@
+env:
+  node: true
+rules:
+  no-console: 0
+  import/extensions: 0
+plugins:
+  - import
+extends:
+  - airbnb-base
