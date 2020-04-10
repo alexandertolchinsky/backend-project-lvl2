@@ -7,3 +7,5 @@ jobs:
     - run: |
         make install
         make lint
+        make build
+        make test

@@ -11,7 +11,6 @@ const genDiff = (pathToFile1, pathToFile2) => {
   const parsedFile2 = JSON.parse(file2Content);
   const uniqKeys = _.uniq([...Object.keys(parsedFile1), ...Object.keys(parsedFile2)]);
   const result = [];
-  result.push('{');
   // eslint-disable-next-line no-restricted-syntax
   for (const key of uniqKeys) {
     if (_.has(parsedFile1, key) && _.has(parsedFile2, key)) {
@@ -26,8 +25,7 @@ const genDiff = (pathToFile1, pathToFile2) => {
       result.push(`  - ${key}: ${parsedFile1[key]}`);
     }
   }
-  result.push('}');
-  console.log(result.join('\n'));
+  return `{\n${result.join('\n')}\n}`;
 };
 
 export default genDiff;
