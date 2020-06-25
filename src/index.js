@@ -1,14 +1,9 @@
-import * as path from 'path';
-import * as fs from 'fs';
 import _ from 'lodash';
+import parse from './parsers.js';
 
 const genDiff = (pathToFile1, pathToFile2) => {
-  const absolutePathToFile1 = path.resolve(pathToFile1);
-  const absolutePathToFile2 = path.resolve(pathToFile2);
-  const file1Content = fs.readFileSync(absolutePathToFile1, 'utf8');
-  const file2Content = fs.readFileSync(absolutePathToFile2, 'utf8');
-  const parsedFile1 = JSON.parse(file1Content);
-  const parsedFile2 = JSON.parse(file2Content);
+  const parsedFile1 = parse(pathToFile1);
+  const parsedFile2 = parse(pathToFile2);
   const uniqKeys = _.uniq([...Object.keys(parsedFile1), ...Object.keys(parsedFile2)]);
   const result = [];
   // eslint-disable-next-line no-restricted-syntax
