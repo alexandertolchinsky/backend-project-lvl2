@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import parse from './parsers.js';
-import reformat from './formatters.js';
+import reformat from './formatters/index.js';
 
 const genDiff = (pathToFile1, pathToFile2, format) => {
   const parsedFile1 = parse(pathToFile1);
@@ -13,17 +13,35 @@ const genDiff = (pathToFile1, pathToFile2, format) => {
     for (const key of keys) {
       if (_.has(obj1, key) && _.has(obj2, key)) {
         if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
-          result[`${key}`] = diff(obj1[key], obj2[key]);
+          const data = diff(obj1[key], obj2[key]);
+          result[key] = {
+            value: data,
+            status: 'objects',
+          };
         } else if (obj1[key] === obj2[key]) {
-          result[`${key}`] = obj1[key];
+          result[key] = {
+            value: obj1[key],
+            status: '',
+          };
         } else {
-          result[`+ ${key}`] = obj2[key];
-          result[`- ${key}`] = obj1[key];
+          result[key] = {
+            value: {
+              old: obj1[key],
+              new: obj2[key],
+            },
+            status: 'update',
+          };
         }
       } else if (!_.has(obj1, key)) {
-        result[`+ ${key}`] = obj2[key];
+        result[key] = {
+          value: obj2[key],
+          status: 'add',
+        };
       } else {
-        result[`- ${key}`] = obj1[key];
+        result[key] = {
+          value: obj1[key],
+          status: 'remove',
+        };
       }
     }
     return result;
