@@ -8,6 +8,9 @@ test.each([
   ['before.json', 'after.json', 'plain'],
   ['before.yml', 'after.yml', 'plain'],
   ['before.ini', 'after.ini', 'plain'],
+  ['before.json', 'after.json', 'json'],
+  ['before.yml', 'after.yml', 'json'],
+  ['before.ini', 'after.ini', 'json'],
 ])('compare %s and %s, result in %s format', (file1, file2, format) => {
   const correctAnswer = fs.readFileSync(`__fixtures__/result.${format}.txt`, 'utf8');
   const absolutePathToFile1 = `${__dirname}/../__fixtures__/${file1}`;

@@ -21,7 +21,7 @@ const genDiff = (pathToFile1, pathToFile2, format) => {
         } else if (obj1[key] === obj2[key]) {
           result[key] = {
             value: obj1[key],
-            status: '',
+            status: 'noupdate',
           };
         } else {
           result[key] = {

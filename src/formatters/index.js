@@ -1,5 +1,6 @@
 import stylish from './stylish.js';
 import plain from './plain.js';
+import json from './json.js';
 
 const reformat = (obj, format) => {
   let result;
@@ -8,6 +9,9 @@ const reformat = (obj, format) => {
     result = `{\n${data}}\n`;
   } else if (format === 'plain') {
     result = plain(obj, '');
+  } else if (format === 'json') {
+    const data = json(obj, 'none');
+    result = `${data}\n`;
   }
   return result;
 };
