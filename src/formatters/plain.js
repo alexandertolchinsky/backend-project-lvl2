@@ -11,7 +11,7 @@ const formatValue = (value) => {
 };
 
 const getPlainStr = (diff) => {
-  const mapDiff = (items, path) => {
+  const reduceDiff = (items, path) => {
     const cb = (acc, item) => {
       const { status } = item;
       const newPath = (path === '') ? item.key : `${path}.${item.key}`;
@@ -23,13 +23,13 @@ const getPlainStr = (diff) => {
         case 'update':
           return `${acc}Property '${newPath}' was updated. From ${formatValue(item.value.old)} to ${formatValue(item.value.new)}\n`;
         case 'objects':
-          return `${acc}${mapDiff(item.value, newPath)}`;
+          return `${acc}${reduceDiff(item.value, newPath)}`;
         default:
           return acc;
       }
     };
     return items.reduce(cb, '');
   };
-  return mapDiff(diff, '');
+  return reduceDiff(diff, '');
 };
 export default getPlainStr;

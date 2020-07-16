@@ -12,7 +12,7 @@ const formatValue = (value, spaces) => {
 };
 
 const getStylishStr = (diff) => {
-  const mapDiff = (items, n) => {
+  const reduceDiff = (items, n) => {
     const spaces = ' '.repeat(n);
     const cb = (acc, item) => {
       const { status } = item;
@@ -20,7 +20,7 @@ const getStylishStr = (diff) => {
         case 'update':
           return `${acc}${spaces}+ ${item.key}: ${formatValue(item.value.new, spaces)}\n${spaces}- ${item.key}: ${formatValue(item.value.old, spaces)}\n`;
         case 'objects':
-          return `${acc}${spaces}  ${item.key}: {\n${mapDiff(item.value, n + 4)}${spaces}  }\n`;
+          return `${acc}${spaces}  ${item.key}: {\n${reduceDiff(item.value, n + 4)}${spaces}  }\n`;
         case 'add':
           return `${acc}${spaces}+ ${item.key}: ${formatValue(item.value, spaces)}\n`;
         case 'remove':
@@ -31,7 +31,7 @@ const getStylishStr = (diff) => {
     };
     return items.reduce(cb, '');
   };
-  return `{\n${mapDiff(diff, 2)}}\n`;
+  return `{\n${reduceDiff(diff, 2)}}\n`;
 };
 
 export default getStylishStr;
