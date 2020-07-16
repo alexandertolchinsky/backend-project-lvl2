@@ -1,19 +1,36 @@
-import * as path from 'path';
-import * as fs from 'fs';
-import * as yaml from 'js-yaml';
-import * as ini from 'ini';
+import { resolve, extname } from 'path';
+import { readFileSync } from 'fs';
+import { safeLoad as parseYaml } from 'js-yaml';
+import { parse as parseIni } from 'ini';
 
-const parse = (pathToFile) => {
-  const absolutePathToFile = path.resolve(pathToFile);
-  const fileContent = fs.readFileSync(absolutePathToFile, 'utf8');
-  const fileExtension = path.extname(absolutePathToFile);
-  if (fileExtension === '.yml') {
-    return yaml.safeLoad(fileContent);
+const fixIniParserBug = (value) => {
+  // eslint-disable-next-line eqeqeq
+  if (typeof value === 'string' && Number(value) == value) {
+    return Number(value);
   }
-  if (fileExtension === '.ini') {
-    return ini.parse(fileContent);
+  if (typeof value === 'object') {
+    const keys = Object.keys(value);
+    const cb = (acc, key) => ({ ...acc, [key]: fixIniParserBug(value[key]) });
+    return keys.reduce(cb, {});
   }
-  return JSON.parse(fileContent);
+  return value;
 };
 
-export default parse;
+const parse = (content, fileExtension) => {
+  if (fileExtension === '.yml') {
+    return parseYaml(content);
+  }
+  if (fileExtension === '.ini') {
+    return fixIniParserBug(parseIni(content));
+  }
+  return JSON.parse(content);
+};
+
+const getParsedContent = (filepath) => {
+  const fileAbsolutePath = resolve(filepath);
+  const content = readFileSync(filepath, 'utf8');
+  const fileExtension = extname(fileAbsolutePath);
+  return parse(content, fileExtension);
+};
+
+export default getParsedContent;

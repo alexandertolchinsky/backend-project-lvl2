@@ -10,31 +10,26 @@ const formatValue = (value) => {
   }
 };
 
-const plain = (obj, path) => {
-  let result = '';
-  const keys = Object.keys(obj);
-  // eslint-disable-next-line no-restricted-syntax
-  for (const key of keys) {
-    const { status } = obj[key];
-    const newPath = (path === '') ? key : `${path}.${key}`;
-    switch (status) {
-      case 'add':
-        result += `Property '${newPath}' was added with value: ${formatValue(obj[key].value)}\n`;
-        break;
-      case 'remove':
-        result += `Property '${newPath}' was removed\n`;
-        break;
-      case 'update':
-        result += `Property '${newPath}' was updated. From ${formatValue(obj[key].value.old)} to ${formatValue(obj[key].value.new)}\n`;
-        break;
-      case 'objects':
-        result += plain(obj[key].value, newPath);
-        break;
-      default:
-        break;
-    }
-  }
-  return result;
+const getPlainStr = (diff) => {
+  const mapDiff = (items, path) => {
+    const cb = (acc, item) => {
+      const { status } = item;
+      const newPath = (path === '') ? item.key : `${path}.${item.key}`;
+      switch (status) {
+        case 'add':
+          return `${acc}Property '${newPath}' was added with value: ${formatValue(item.value)}\n`;
+        case 'remove':
+          return `${acc}Property '${newPath}' was removed\n`;
+        case 'update':
+          return `${acc}Property '${newPath}' was updated. From ${formatValue(item.value.old)} to ${formatValue(item.value.new)}\n`;
+        case 'objects':
+          return `${acc}${mapDiff(item.value, newPath)}`;
+        default:
+          return acc;
+      }
+    };
+    return items.reduce(cb, '');
+  };
+  return mapDiff(diff, '');
 };
-
-export default plain;
+export default getPlainStr;

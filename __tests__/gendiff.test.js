@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { readFileSync } from 'fs';
 import genDiff from '../src/index.js';
 
 test.each([
@@ -11,10 +11,10 @@ test.each([
   ['before.json', 'after.json', 'json'],
   ['before.yml', 'after.yml', 'json'],
   ['before.ini', 'after.ini', 'json'],
-])('compare %s and %s, result in %s format', (file1, file2, format) => {
-  const correctAnswer = fs.readFileSync(`__fixtures__/result.${format}.txt`, 'utf8');
-  const absolutePathToFile1 = `${__dirname}/../__fixtures__/${file1}`;
-  const absolutePathToFile2 = `${__dirname}/../__fixtures__/${file2}`;
+])('compare %s and %s, result in %s format', (fileName1, fileName2, format) => {
+  const correctAnswer = readFileSync(`__fixtures__/result.${format}.txt`, 'utf8');
+  const absolutePathToFile1 = `${__dirname}/../__fixtures__/${fileName1}`;
+  const absolutePathToFile2 = `${__dirname}/../__fixtures__/${fileName2}`;
   expect(genDiff(absolutePathToFile1, absolutePathToFile2, `${format}`)).toEqual(correctAnswer);
-  expect(genDiff(`__fixtures__/${file1}`, `__fixtures__/${file2}`, `${format}`)).toEqual(correctAnswer);
+  expect(genDiff(`__fixtures__/${fileName1}`, `__fixtures__/${fileName2}`, `${format}`)).toEqual(correctAnswer);
 });

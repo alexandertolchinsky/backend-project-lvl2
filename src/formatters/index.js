@@ -1,19 +1,18 @@
-import stylish from './stylish.js';
-import plain from './plain.js';
-import json from './json.js';
+import getStylishStr from './stylish.js';
+import getPlainStr from './plain.js';
+import getJsonStr from './json.js';
 
-const reformat = (obj, format) => {
-  let result;
+const reformat = (diff, format) => {
   if (format === 'stylish') {
-    const data = stylish(obj, 2);
-    result = `{\n${data}}\n`;
-  } else if (format === 'plain') {
-    result = plain(obj, '');
-  } else if (format === 'json') {
-    const data = json(obj, 'none');
-    result = `${data}\n`;
+    return getStylishStr(diff);
   }
-  return result;
+  if (format === 'plain') {
+    return getPlainStr(diff);
+  }
+  if (format === 'json') {
+    return getJsonStr(diff);
+  }
+  return null;
 };
 
 export default reformat;
