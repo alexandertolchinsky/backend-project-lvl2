@@ -11,25 +11,27 @@ const formatValue = (value) => {
 };
 
 const getPlainStr = (diff) => {
-  const reduceDiff = (items, path) => {
+  const buildPlainStr = (items, path) => {
     const cb = (acc, item) => {
       const { status } = item;
       const newPath = (path === '') ? item.key : `${path}.${item.key}`;
       switch (status) {
-        case 'add':
-          return `${acc}Property '${newPath}' was added with value: ${formatValue(item.value)}\n`;
-        case 'remove':
-          return `${acc}Property '${newPath}' was removed\n`;
-        case 'update':
-          return `${acc}Property '${newPath}' was updated. From ${formatValue(item.value.old)} to ${formatValue(item.value.new)}\n`;
+        case 'added':
+          return [...acc, `Property '${newPath}' was added with value: ${formatValue(item.value)}`];
+        case 'removed':
+          return [...acc, `Property '${newPath}' was removed`];
+        case 'updated':
+          return [...acc, `Property '${newPath}' was updated. From ${formatValue(item.value.old)} to ${formatValue(item.value.new)}`];
         case 'objects':
-          return `${acc}${reduceDiff(item.value, newPath)}`;
-        default:
+          return [...acc, `${buildPlainStr(item.value, newPath)}`];
+        case 'unchanged':
           return acc;
+        default:
+          return new Error(`Unknown status: '${status}'!`);
       }
     };
-    return items.reduce(cb, '');
+    return items.reduce(cb, []).join('\n');
   };
-  return reduceDiff(diff, '');
+  return buildPlainStr(diff, '');
 };
 export default getPlainStr;

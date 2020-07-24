@@ -1,5 +1,3 @@
-import { resolve, extname } from 'path';
-import { readFileSync } from 'fs';
 import { safeLoad as parseYaml } from 'js-yaml';
 import { parse as parseIni } from 'ini';
 
@@ -16,21 +14,17 @@ const fixIniParserBug = (value) => {
   return value;
 };
 
-const parse = (content, fileExtension) => {
-  if (fileExtension === '.yml') {
-    return parseYaml(content);
+const parse = (content, contentFormat) => {
+  switch (contentFormat) {
+    case '.yml':
+      return parseYaml(content);
+    case '.ini':
+      return fixIniParserBug(parseIni(content));
+    case '.json':
+      return JSON.parse(content);
+    default:
+      return new Error(`Unknown file format: '${contentFormat}'!`);
   }
-  if (fileExtension === '.ini') {
-    return fixIniParserBug(parseIni(content));
-  }
-  return JSON.parse(content);
 };
 
-const getParsedContent = (filepath) => {
-  const fileAbsolutePath = resolve(filepath);
-  const content = readFileSync(filepath, 'utf8');
-  const fileExtension = extname(fileAbsolutePath);
-  return parse(content, fileExtension);
-};
-
-export default getParsedContent;
+export default parse;

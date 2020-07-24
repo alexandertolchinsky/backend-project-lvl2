@@ -3,8 +3,8 @@ const formatValue = (value, spaces) => {
   switch (type) {
     case 'object': {
       const keys = Object.keys(value);
-      const cb = (acc, key) => (`${acc}${spaces}      ${key}: ${value[key]}\n`);
-      return `{\n${keys.reduce(cb, '')}${spaces}  }`;
+      const cb = (key) => (`${spaces}      ${key}: ${value[key]}`);
+      return `{\n${keys.map(cb).join('\n')}\n${spaces}  }`;
     }
     default:
       return value;
@@ -12,26 +12,28 @@ const formatValue = (value, spaces) => {
 };
 
 const getStylishStr = (diff) => {
-  const reduceDiff = (items, n) => {
+  const buildStylishStr = (items, n) => {
     const spaces = ' '.repeat(n);
-    const cb = (acc, item) => {
+    const cb = (item) => {
       const { status } = item;
       switch (status) {
-        case 'update':
-          return `${acc}${spaces}+ ${item.key}: ${formatValue(item.value.new, spaces)}\n${spaces}- ${item.key}: ${formatValue(item.value.old, spaces)}\n`;
+        case 'updated':
+          return `${spaces}+ ${item.key}: ${formatValue(item.value.new, spaces)}\n${spaces}- ${item.key}: ${formatValue(item.value.old, spaces)}`;
         case 'objects':
-          return `${acc}${spaces}  ${item.key}: {\n${reduceDiff(item.value, n + 4)}${spaces}  }\n`;
-        case 'add':
-          return `${acc}${spaces}+ ${item.key}: ${formatValue(item.value, spaces)}\n`;
-        case 'remove':
-          return `${acc}${spaces}- ${item.key}: ${formatValue(item.value, spaces)}\n`;
+          return `${spaces}  ${item.key}: {\n${buildStylishStr(item.value, n + 4)}\n${spaces}  }`;
+        case 'added':
+          return `${spaces}+ ${item.key}: ${formatValue(item.value, spaces)}`;
+        case 'removed':
+          return `${spaces}- ${item.key}: ${formatValue(item.value, spaces)}`;
+        case 'unchanged':
+          return `${spaces}  ${item.key}: ${formatValue(item.value, spaces)}`;
         default:
-          return `${acc}${spaces}  ${item.key}: ${formatValue(item.value, spaces)}\n`;
+          return new Error(`Unknown status: '${status}'!`);
       }
     };
-    return items.reduce(cb, '');
+    return items.map(cb).join('\n');
   };
-  return `{\n${reduceDiff(diff, 2)}}\n`;
+  return `{\n${buildStylishStr(diff, 2)}\n}`;
 };
 
 export default getStylishStr;
