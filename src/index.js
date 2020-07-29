@@ -5,10 +5,10 @@ import parse from './parsers.js';
 import format from './formatters/index.js';
 
 const readFile = (filepath) => readFileSync(resolve(filepath), 'utf8');
-const getFileFormat = (filepath) => extname(filepath);
+const getFileExtension = (filepath) => extname(filepath);
 const getParsedContent = (filepath) => {
   const content = readFile(filepath);
-  const contentFormat = getFileFormat(filepath);
+  const contentFormat = getFileExtension(filepath).slice(1);
   return parse(content, contentFormat);
 };
 
@@ -26,7 +26,7 @@ const genDiff = (filepath1, filepath2, formatterName) => {
       }
       if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
         const value = getDiff(obj1[key], obj2[key]);
-        return { key, value, status: 'objects' };
+        return { key, value, status: 'nested' };
       }
       if (obj1[key] !== obj2[key]) {
         return { key, value: { old: obj1[key], new: obj2[key] }, status: 'updated' };

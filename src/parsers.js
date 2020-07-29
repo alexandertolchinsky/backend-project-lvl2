@@ -16,14 +16,14 @@ const fixIniParserBug = (value) => {
 
 const parse = (content, contentFormat) => {
   switch (contentFormat) {
-    case '.yml':
+    case 'yml':
       return parseYaml(content);
-    case '.ini':
+    case 'ini':
       return fixIniParserBug(parseIni(content));
-    case '.json':
+    case 'json':
       return JSON.parse(content);
     default:
-      return new Error(`Unknown file format: '${contentFormat}'!`);
+      throw new Error(`Unknown content format: '${contentFormat}'!`);
   }
 };
 

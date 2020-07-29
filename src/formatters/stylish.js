@@ -1,26 +1,23 @@
 const formatValue = (value, spaces) => {
-  const type = typeof value;
-  switch (type) {
-    case 'object': {
-      const keys = Object.keys(value);
-      const cb = (key) => (`${spaces}      ${key}: ${value[key]}`);
-      return `{\n${keys.map(cb).join('\n')}\n${spaces}  }`;
-    }
-    default:
-      return value;
+  if (typeof value === 'object') {
+    const keys = Object.keys(value);
+    const cb = (key) => (`${spaces}      ${key}: ${value[key]}`);
+    return `{\n${keys.map(cb).join('\n')}\n${spaces}  }`;
   }
+  return value;
 };
 
 const getStylishStr = (diff) => {
   const buildStylishStr = (items, n) => {
-    const spaces = ' '.repeat(n);
+    const spacesCount = 2 + (n * 4);
+    const spaces = ' '.repeat(spacesCount);
     const cb = (item) => {
       const { status } = item;
       switch (status) {
         case 'updated':
           return `${spaces}+ ${item.key}: ${formatValue(item.value.new, spaces)}\n${spaces}- ${item.key}: ${formatValue(item.value.old, spaces)}`;
-        case 'objects':
-          return `${spaces}  ${item.key}: {\n${buildStylishStr(item.value, n + 4)}\n${spaces}  }`;
+        case 'nested':
+          return `${spaces}  ${item.key}: {\n${buildStylishStr(item.value, n + 1)}\n${spaces}  }`;
         case 'added':
           return `${spaces}+ ${item.key}: ${formatValue(item.value, spaces)}`;
         case 'removed':
@@ -28,12 +25,12 @@ const getStylishStr = (diff) => {
         case 'unchanged':
           return `${spaces}  ${item.key}: ${formatValue(item.value, spaces)}`;
         default:
-          return new Error(`Unknown status: '${status}'!`);
+          throw new Error(`Unknown status: '${status}'!`);
       }
     };
     return items.map(cb).join('\n');
   };
-  return `{\n${buildStylishStr(diff, 2)}\n}`;
+  return `{\n${buildStylishStr(diff, 0)}\n}`;
 };
 
 export default getStylishStr;

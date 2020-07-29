@@ -10,7 +10,7 @@ const format = (diff, formatterName) => {
     case 'json':
       return JSON.stringify(diff);
     default:
-      return new Error(`Unknown formatter name: '${formatterName}'!`);
+      throw new Error(`Unknown formatter name: '${formatterName}'!`);
   }
 };
 
