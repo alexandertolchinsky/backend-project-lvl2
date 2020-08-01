@@ -1,10 +1,10 @@
 const formatValue = (value, spaces) => {
-  if (typeof value === 'object') {
-    const keys = Object.keys(value);
-    const cb = (key) => (`${spaces}      ${key}: ${value[key]}`);
-    return `{\n${keys.map(cb).join('\n')}\n${spaces}  }`;
+  if (typeof value !== 'object') {
+    return value;
   }
-  return value;
+  const keys = Object.keys(value);
+  const cb = (key) => (`${spaces}      ${key}: ${value[key]}`);
+  return `{\n${keys.map(cb).join('\n')}\n${spaces}  }`;
 };
 
 const getStylishStr = (diff) => {
