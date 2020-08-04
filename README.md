@@ -30,7 +30,7 @@ gendiff -f plain file1.json file2.json
 ```
 compare files, output  in "JSON" format 
 ```sh 
-gendiff -f json  file1.json file2.yml
+gendiff -f json file1.json file2.yml
 ```
 
 ## Usage
