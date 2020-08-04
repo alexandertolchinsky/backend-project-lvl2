@@ -7,7 +7,7 @@ This is a training project in which I implemented a utility to find differences 
 
 The capabilities of the utility:
 1) Support for different formats
-2) Report generation in plain text, stylish and json
+2) Report generation in plain text, stylish and json 
 
 ## Getting Started
 ### Installation
@@ -20,15 +20,15 @@ git clone https://github.com/alexandertolchinsky/backend-project-lvl2.git
 npm link
 ```
 ## How to run
-compare files, output  in stylish format 
+compare files, output  in "stylish" format 
 ```sh 
 gendiff file1.json file2.ini
 ```
-compare files, output  in plain format 
+compare files, output  in "plain" format 
 ```sh 
 gendiff -f plain file1.json file2.json
 ```
-compare files, output  in JSON format 
+compare files, output  in "JSON" format 
 ```sh 
 gendiff -f json  file1.json file2.yml
 ```
